@@ -87,6 +87,13 @@ function bootstrap(bootstrap_jl::String;vanilla = false, force = false)
     log_bootstrap(true) #clear the log file
 end
 
+unrevert() = begin
+    sys_o = "sys.$(Libdl.dlext)"
+    source = sysimg_folder(sys_o)
+    dest = joinpath(default_sysimg_path(),sys_o)
+    cp(source,dest;remove_destination=true)
+end
+
 parseable(ln) = try parse(ln);true;catch false; end
 function generate_bootstrap_jl()
     stop_log_bootstrap()
