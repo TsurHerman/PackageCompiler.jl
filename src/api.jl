@@ -113,7 +113,7 @@ end
 Builds a clean system image, similar to a fresh Julia install.
 Can also be used to build a native system image for a downloaded cross compiled julia binary.
 """
-function force_native_image!(debug = false) # debug is ignored right now
-    sysimg = get_backup!(debug, "native")
+function force_native_image!(debug = false; force = false) # debug is ignored right now
+    sysimg = get_backup!(debug, "native"; force = force)
     copy_system_image(dirname(sysimg), default_sysimg_path(debug))
 end

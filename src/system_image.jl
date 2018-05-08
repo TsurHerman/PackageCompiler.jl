@@ -52,11 +52,11 @@ Returns the system image file stored in the backup folder.
 If there is no backup, this function will automatically generate a system image
 in the backup folder.
 """
-function get_backup!(debug, cpu_target = nothing)
+function get_backup!(debug, cpu_target = nothing ; force = false)
     target = julia_cpu_target(cpu_target)
     sysimg_backup = sysimgbackup_folder(target)
     isdir(sysimg_backup) || mkpath(sysimg_backup)
-    if !all(x-> isfile(joinpath(sysimg_backup, x)), sysimage_binaries) # we have a backup
+    if force || !all(x-> isfile(joinpath(sysimg_backup, x)), sysimage_binaries) # we have a backup
         compile_system_image(joinpath(sysimg_backup, "sys"), target; debug = debug)
     end
     return joinpath(sysimg_backup, "sys.$(Libdl.dlext)")

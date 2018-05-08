@@ -92,7 +92,9 @@ unrevert() = begin
     source = sysimg_folder(sys_o)
     dest = joinpath(default_sysimg_path(),sys_o)
     cp(source,dest;remove_destination=true)
+    info("Succesfuly restored last built sysimg and replaced $dest")
 end
+export unrevert
 
 parseable(ln) = try parse(ln);true;catch false; end
 function generate_bootstrap_jl()
@@ -105,7 +107,14 @@ function generate_bootstrap_jl()
     push!(blacklisted,"unknown")
 
     open(sysimg_folder("bootstrap.jl"), "w") do io
-        println(io,"try JULIA_HOME;catch Sys.__init__();Base.early_init();end")
+        println(io,"""
+        try JULIA_HOME
+        catch
+            Sys.__init__();
+            Base.early_init();
+            using Compat;
+            Compat.Sys.__init__();
+        end """)
 
         for (k,v) in pc
             string(k) in blacklisted && continue
